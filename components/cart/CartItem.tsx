@@ -34,7 +34,7 @@ export default function CartItem({ item, onUpdateQuantity, onRemove }: CartItemP
             -
           </button>
 
-          <span className="font-semibold">{item.quantity}</span>
+          <span className="font-semibold text-stone-700">{item.quantity}</span>
 
           <button
             type="button"

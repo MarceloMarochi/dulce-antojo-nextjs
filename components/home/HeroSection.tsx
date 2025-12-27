@@ -8,10 +8,10 @@ export default function HeroSection({ onViewProducts }: HeroSectionProps) {
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-12">
           <h2 className="text-5xl md:text-6xl font-bold text-stone-800 mb-4">
-            El Arte de la Repostería
+            El Arte de la Pastelería
           </h2>
           <p className="text-xl text-stone-600 max-w-2xl mx-auto mb-8">
-            Pan y dulces premium hechos desde cero con amor y dedicación
+            Budines, tortas, tartas y muchas cosas más elaboradas con amor y dedicación
           </p>
           <button 
             onClick={onViewProducts}
