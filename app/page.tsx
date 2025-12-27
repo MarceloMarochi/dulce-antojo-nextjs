@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Header from '@/components/layout/Header';
 import HeroSection from '@/components/home/HeroSection';
 import FeaturesSection from '@/components/home/FeaturesSection';
+import ProductsPreview from '@/components/home/ProductsPreview';
 import ProductFilters from '@/components/products/ProductFilters';
 import ProductGrid from '@/components/products/ProductGrid';
 import ProductModal from '@/components/products/ProductModal';
@@ -14,7 +15,6 @@ import { useProducts } from '@/hooks/useProducts';
 import { useAuth } from '@/hooks/useAuth';
 import { sendWhatsAppOrder } from '@/lib/whatsapp';
 import Footer from '@/components/layout/Footer';
-
 
 export default function Home() {
   const [view, setView] = useState<'home' | 'products' | 'admin'>('home');
@@ -33,7 +33,6 @@ export default function Home() {
 
   const HOME_PREVIEW_COUNT = 4;
 
-  // Para el home preview: mostramos productos activos (no admin), sin filtros
   const homeAllProducts = filterProducts('', 'all', false);
   const homePreviewProducts = homeAllProducts.slice(0, HOME_PREVIEW_COUNT);
   const homeHasMoreProducts = homeAllProducts.length > HOME_PREVIEW_COUNT;
@@ -43,7 +42,6 @@ export default function Home() {
     setSelectedCategory('all');
     setView('products');
   };
-
 
   const handleLogin = (username: string, password: string) => {
     const success = login(username, password);
@@ -85,7 +83,7 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-rose-50 via-amber-50 to-stone-50">
+    <div className="flex flex-col min-h-screen bg-gradient-to-br from-rose-50 via-amber-50 to-stone-50">
       <Header
         view={view}
         setView={setView}
@@ -96,90 +94,58 @@ export default function Home() {
         onShowCart={() => setShowCart(true)}
       />
 
- {/*      {view === 'home' && (
-        <>
-          <HeroSection onViewProducts={goToProducts} />
-          <FeaturesSection />
-        </>
-      )} */}
+      <main className="flex-grow">
+        {view === 'home' && (
+          <>
+            {/* Hero Section */}
+            <HeroSection onViewProducts={goToProducts} />
 
-      {view === 'home' && (
-        <>
-          <HeroSection onViewProducts={goToProducts} />
-          <FeaturesSection />
+            {/* Products Preview Section */}
+            <ProductsPreview
+              products={homePreviewProducts}
+              hasMoreProducts={homeHasMoreProducts}
+              onViewAll={goToProducts}
+              onAddToCart={addToCart}
+            />
 
-          {/* Preview de productos en Home */}
-          <section className="mt-50 pb-16">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-              <div className="flex items-center justify-between gap-4 mb-8">
-                <div>
-                  <h3 className="text-3xl font-bold text-stone-800">Productos</h3>
-                  <p className="text-xl text-stone-600 max-w-2xl mx-auto mb-8 mt-4">
-                    Una vista rápida de lo que tenemos disponible.
-                  </p>
-                </div>
+            {/* Features Section */}
+            <FeaturesSection />
+          </>
+        )}
 
-                {homeHasMoreProducts && (
-                  <button
-                    onClick={goToProducts}
-                    className="bg-gradient-to-r from-rose-400 to-amber-400 text-white px-8 py-3 rounded-full font-semibold hover:shadow-lg transform hover:-translate-y-1 transition-all duration-300">
-                    Ver más
-                  </button>
-                )}
-              </div>
+        {(view === 'products' || view === 'admin') && (
+          <div className="flex flex-col min-h-[calc(100vh-64px)]">
+            <div className="py-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full">
+              <ProductFilters
+                searchTerm={searchTerm}
+                onSearchChange={setSearchTerm}
+                selectedCategory={selectedCategory}
+                onCategoryChange={setSelectedCategory}
+              />
             </div>
 
-            <ProductGrid
-              products={homePreviewProducts}
-              isAdmin={false}
-              onAddToCart={addToCart}
-              // no-op handlers para cumplir la firma sin habilitar admin
-              onEdit={() => {}}
-              onDelete={() => {}}
-              onToggleStatus={() => {}}
-              onNewProduct={() => {}}
-            />
-
-            {homeHasMoreProducts && (
-              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-10 flex justify-center">
-                <button
-                  onClick={goToProducts}
-                  className="bg-gradient-to-r from-rose-400 to-amber-400 text-white px-8 py-3 rounded-full font-semibold hover:shadow-lg transform hover:-translate-y-1 transition-all duration-300"
-                >
-                  Ver más productos
-                </button>
-              </div>
-            )}
-          </section>
-        </>
-      )}
-
-      {(view === 'products' || view === 'admin') && (
-        <>
-          <div className="py-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-            <ProductFilters
-              searchTerm={searchTerm}
-              onSearchChange={setSearchTerm}
-              selectedCategory={selectedCategory}
-              onCategoryChange={setSelectedCategory}
-            />
+            <div className="flex-grow">
+              <ProductGrid
+                products={filteredProducts}
+                isAdmin={view === 'admin'}
+                onAddToCart={addToCart}
+                onEdit={handleEditProduct}
+                onDelete={handleDeleteProduct}
+                onToggleStatus={toggleProductStatus}
+                onNewProduct={() => {
+                  setEditingProduct(null);
+                  setShowProductModal(true);
+                }}
+              />
+            </div>
           </div>
+        )}
+      </main>
 
-          <ProductGrid
-            products={filteredProducts}
-            isAdmin={view === 'admin'}
-            onAddToCart={addToCart}
-            onEdit={handleEditProduct}
-            onDelete={handleDeleteProduct}
-            onToggleStatus={toggleProductStatus}
-            onNewProduct={() => {
-              setEditingProduct(null);
-              setShowProductModal(true);
-            }}
-          />
-        </>
-      )}
-
+      <Footer
+        instagramUrl='https://www.instagram.com/agos.aliaga/'
+        whatsappNumber='5493515147985'
+      />
 
       <CartSidebar
         isOpen={showCart}
@@ -205,11 +171,6 @@ export default function Home() {
         }}
         onSave={handleSaveProduct}
         editingProduct={editingProduct}
-      />
-
-      <Footer
-        instagramUrl='https://www.instagram.com/agos.aliaga/'
-        whatsappNumber='5493515147985'
       />
     </div>
   );
