@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Header from '@/components/layout/Header';
 import HeroSection from '@/components/home/HeroSection';
 import FeaturesSection from '@/components/home/FeaturesSection';
+import ProductsPreview from '@/components/home/ProductsPreview';
 import ProductFilters from '@/components/products/ProductFilters';
 import ProductGrid from '@/components/products/ProductGrid';
 import ProductModal from '@/components/products/ProductModal';
@@ -13,6 +14,7 @@ import { useCart } from '@/hooks/useCart';
 import { useProducts } from '@/hooks/useProducts';
 import { useAuth } from '@/hooks/useAuth';
 import { sendWhatsAppOrder } from '@/lib/whatsapp';
+import Footer from '@/components/layout/Footer';
 
 export default function Home() {
   const [view, setView] = useState<'home' | 'products' | 'admin'>('home');
@@ -28,6 +30,18 @@ export default function Home() {
   const { isAuthenticated, login, logout } = useAuth();
 
   const filteredProducts = filterProducts(searchTerm, selectedCategory, view === 'admin');
+
+  const HOME_PREVIEW_COUNT = 4;
+
+  const homeAllProducts = filterProducts('', 'all', false);
+  const homePreviewProducts = homeAllProducts.slice(0, HOME_PREVIEW_COUNT);
+  const homeHasMoreProducts = homeAllProducts.length > HOME_PREVIEW_COUNT;
+
+  const goToProducts = () => {
+    setSearchTerm('');
+    setSelectedCategory('all');
+    setView('products');
+  };
 
   const handleLogin = (username: string, password: string) => {
     const success = login(username, password);
@@ -69,7 +83,7 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-rose-50 via-amber-50 to-stone-50">
+    <div className="flex flex-col min-h-screen bg-gradient-to-br from-rose-50 via-amber-50 to-stone-50">
       <Header
         view={view}
         setView={setView}
@@ -80,37 +94,58 @@ export default function Home() {
         onShowCart={() => setShowCart(true)}
       />
 
-      {view === 'home' && (
-        <>
-          <HeroSection onViewProducts={() => setView('products')} />
-          <FeaturesSection />
-        </>
-      )}
+      <main className="flex-grow">
+        {view === 'home' && (
+          <>
+            {/* Hero Section */}
+            <HeroSection onViewProducts={goToProducts} />
 
-      {(view === 'products' || view === 'admin') && (
-        <>
-          <div className="py-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-            <ProductFilters
-              searchTerm={searchTerm}
-              onSearchChange={setSearchTerm}
-              selectedCategory={selectedCategory}
-              onCategoryChange={setSelectedCategory}
+            {/* Products Preview Section */}
+            <ProductsPreview
+              products={homePreviewProducts}
+              hasMoreProducts={homeHasMoreProducts}
+              onViewAll={goToProducts}
+              onAddToCart={addToCart}
             />
+
+            {/* Features Section */}
+            <FeaturesSection />
+          </>
+        )}
+
+        {(view === 'products' || view === 'admin') && (
+          <div className="flex flex-col min-h-[calc(100vh-64px)]">
+            <div className="py-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full">
+              <ProductFilters
+                searchTerm={searchTerm}
+                onSearchChange={setSearchTerm}
+                selectedCategory={selectedCategory}
+                onCategoryChange={setSelectedCategory}
+              />
+            </div>
+
+            <div className="flex-grow">
+              <ProductGrid
+                products={filteredProducts}
+                isAdmin={view === 'admin'}
+                onAddToCart={addToCart}
+                onEdit={handleEditProduct}
+                onDelete={handleDeleteProduct}
+                onToggleStatus={toggleProductStatus}
+                onNewProduct={() => {
+                  setEditingProduct(null);
+                  setShowProductModal(true);
+                }}
+              />
+            </div>
           </div>
-          <ProductGrid
-            products={filteredProducts}
-            isAdmin={view === 'admin'}
-            onAddToCart={addToCart}
-            onEdit={handleEditProduct}
-            onDelete={handleDeleteProduct}
-            onToggleStatus={toggleProductStatus}
-            onNewProduct={() => {
-              setEditingProduct(null);
-              setShowProductModal(true);
-            }}
-          />
-        </>
-      )}
+        )}
+      </main>
+
+      <Footer
+        instagramUrl='https://www.instagram.com/agos.aliaga/'
+        whatsappNumber='5493515147985'
+      />
 
       <CartSidebar
         isOpen={showCart}

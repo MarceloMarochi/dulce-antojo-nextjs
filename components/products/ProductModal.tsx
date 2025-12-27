@@ -95,7 +95,7 @@ export default function ProductModal({
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                   setFormData((prev) => ({ ...prev, name: e.target.value }))
                 }
-                className="w-full px-4 py-3 rounded-xl border border-rose-200 focus:outline-none focus:ring-2 focus:ring-rose-300"
+                className="w-full px-4 py-3 rounded-xl border border-rose-200 focus:outline-none focus:ring-2 focus:ring-rose-300 text-stone-400"
                 required
               />
             </div>
@@ -110,7 +110,7 @@ export default function ProductModal({
                     category: e.target.value as ProductCategory,
                   }))
                 }
-                className="w-full px-4 py-3 rounded-xl border border-rose-200 focus:outline-none focus:ring-2 focus:ring-rose-300"
+                className="w-full px-4 py-3 rounded-xl border border-rose-200 focus:outline-none focus:ring-2 focus:ring-rose-300 text-stone-400"
                 required
               >
                 <option value="cookies">Galletas</option>
@@ -131,7 +131,7 @@ export default function ProductModal({
               onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                 setFormData((prev) => ({ ...prev, price: e.target.value }))
               }
-              className="w-full px-4 py-3 rounded-xl border border-rose-200 focus:outline-none focus:ring-2 focus:ring-rose-300"
+              className="w-full px-4 py-3 rounded-xl border border-rose-200 focus:outline-none focus:ring-2 focus:ring-rose-300 text-stone-400"
               required
             />
           </div>
@@ -144,7 +144,7 @@ export default function ProductModal({
               onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                 setFormData((prev) => ({ ...prev, image: e.target.value }))
               }
-              className="w-full px-4 py-3 rounded-xl border border-rose-200 focus:outline-none focus:ring-2 focus:ring-rose-300"
+              className="w-full px-4 py-3 rounded-xl border border-rose-200 focus:outline-none focus:ring-2 focus:ring-rose-300 text-stone-400"
               placeholder="https://ejemplo.com/imagen.jpg"
               required
             />
@@ -157,7 +157,7 @@ export default function ProductModal({
               onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
                 setFormData((prev) => ({ ...prev, description: e.target.value }))
               }
-              className="w-full px-4 py-3 rounded-xl border border-rose-200 focus:outline-none focus:ring-2 focus:ring-rose-300"
+              className="w-full px-4 py-3 rounded-xl border border-rose-200 focus:outline-none focus:ring-2 focus:ring-rose-300 text-stone-400"
               rows={3}
               required
             />

@@ -122,7 +122,7 @@ export default function AuthModal({ isOpen, onClose, onLogin }: AuthModalProps) 
               type="text"
               value={username}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => setUsername(e.target.value)}
-              className="w-full px-4 py-3 rounded-xl border border-rose-200 focus:outline-none focus:ring-2 focus:ring-rose-300"
+              className="w-full px-4 py-3 rounded-xl border border-rose-200 focus:outline-none focus:ring-2 focus:ring-rose-300 text-stone-600"
               required
             />
           </div>
@@ -135,7 +135,7 @@ export default function AuthModal({ isOpen, onClose, onLogin }: AuthModalProps) 
                 type={showPassword ? "text" : "password"}
                 value={password}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
-                className="w-full px-4 py-3 rounded-xl border border-rose-200 focus:outline-none focus:ring-2 focus:ring-rose-300"
+                className="w-full px-4 py-3 rounded-xl border border-rose-200 focus:outline-none focus:ring-2 focus:ring-rose-300 text-stone-600"
                 required
               />
 

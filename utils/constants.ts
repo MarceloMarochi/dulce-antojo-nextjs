@@ -105,4 +105,4 @@ export const AUTH_CREDENTIALS: AuthCredentials = {
   password: 'admin123'
 };
 
-export const WHATSAPP_NUMBER = '5491234567890';
+export const WHATSAPP_NUMBER = '5493515147985';
