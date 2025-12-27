@@ -1,65 +1,142 @@
-import Image from "next/image";
+'use client';
+
+import { useState } from 'react';
+import Header from '@/components/layout/Header';
+import HeroSection from '@/components/home/HeroSection';
+import FeaturesSection from '@/components/home/FeaturesSection';
+import ProductFilters from '@/components/products/ProductFilters';
+import ProductGrid from '@/components/products/ProductGrid';
+import ProductModal from '@/components/products/ProductModal';
+import CartSidebar from '@/components/cart/CartSidebar';
+import AuthModal from '@/components/auth/AuthModal';
+import { useCart } from '@/hooks/useCart';
+import { useProducts } from '@/hooks/useProducts';
+import { useAuth } from '@/hooks/useAuth';
+import { sendWhatsAppOrder } from '@/lib/whatsapp';
 
 export default function Home() {
+  const [view, setView] = useState<'home' | 'products' | 'admin'>('home');
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('all');
+  const [showCart, setShowCart] = useState(false);
+  const [showAuthModal, setShowAuthModal] = useState(false);
+  const [showProductModal, setShowProductModal] = useState(false);
+  const [editingProduct, setEditingProduct] = useState(null);
+
+  const { cart, addToCart, removeFromCart, updateQuantity, getTotalPrice } = useCart();
+  const { products, addProduct, updateProduct, deleteProduct, toggleProductStatus, filterProducts } = useProducts();
+  const { isAuthenticated, login, logout } = useAuth();
+
+  const filteredProducts = filterProducts(searchTerm, selectedCategory, view === 'admin');
+
+  const handleLogin = (username: string, password: string) => {
+    const success = login(username, password);
+    if (success) {
+      setShowAuthModal(false);
+      setView('admin');
+    }
+    return success;
+  };
+
+  const handleLogout = () => {
+    logout();
+    setView('home');
+  };
+
+  const handleSaveProduct = (productData: any) => {
+    if (editingProduct) {
+      updateProduct({ ...productData, id: editingProduct.id });
+    } else {
+      addProduct(productData);
+    }
+    setShowProductModal(false);
+    setEditingProduct(null);
+  };
+
+  const handleEditProduct = (product: any) => {
+    setEditingProduct(product);
+    setShowProductModal(true);
+  };
+
+  const handleDeleteProduct = (productId: number) => {
+    if (window.confirm('¿Estás seguro de que deseas eliminar este producto?')) {
+      deleteProduct(productId);
+    }
+  };
+
+  const handleCheckout = () => {
+    sendWhatsAppOrder(cart);
+  };
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
+    <div className="min-h-screen bg-gradient-to-br from-rose-50 via-amber-50 to-stone-50">
+      <Header
+        view={view}
+        setView={setView}
+        isAuthenticated={isAuthenticated}
+        onLogout={handleLogout}
+        onShowAuth={() => setShowAuthModal(true)}
+        cartCount={cart.length}
+        onShowCart={() => setShowCart(true)}
+      />
+
+      {view === 'home' && (
+        <>
+          <HeroSection onViewProducts={() => setView('products')} />
+          <FeaturesSection />
+        </>
+      )}
+
+      {(view === 'products' || view === 'admin') && (
+        <>
+          <div className="py-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+            <ProductFilters
+              searchTerm={searchTerm}
+              onSearchChange={setSearchTerm}
+              selectedCategory={selectedCategory}
+              onCategoryChange={setSelectedCategory}
             />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
+          </div>
+          <ProductGrid
+            products={filteredProducts}
+            isAdmin={view === 'admin'}
+            onAddToCart={addToCart}
+            onEdit={handleEditProduct}
+            onDelete={handleDeleteProduct}
+            onToggleStatus={toggleProductStatus}
+            onNewProduct={() => {
+              setEditingProduct(null);
+              setShowProductModal(true);
+            }}
+          />
+        </>
+      )}
+
+      <CartSidebar
+        isOpen={showCart}
+        onClose={() => setShowCart(false)}
+        cart={cart}
+        onUpdateQuantity={updateQuantity}
+        onRemove={removeFromCart}
+        totalPrice={getTotalPrice()}
+        onCheckout={handleCheckout}
+      />
+
+      <AuthModal
+        isOpen={showAuthModal}
+        onClose={() => setShowAuthModal(false)}
+        onLogin={handleLogin}
+      />
+
+      <ProductModal
+        isOpen={showProductModal}
+        onClose={() => {
+          setShowProductModal(false);
+          setEditingProduct(null);
+        }}
+        onSave={handleSaveProduct}
+        editingProduct={editingProduct}
+      />
     </div>
   );
 }
