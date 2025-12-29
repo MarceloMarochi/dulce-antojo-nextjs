@@ -97,10 +97,8 @@ export default function Home() {
       <main className="flex-grow">
         {view === 'home' && (
           <>
-            {/* Hero Section */}
             <HeroSection onViewProducts={goToProducts} />
 
-            {/* Products Preview Section */}
             <ProductsPreview
               products={homePreviewProducts}
               hasMoreProducts={homeHasMoreProducts}
@@ -108,7 +106,6 @@ export default function Home() {
               onAddToCart={addToCart}
             />
 
-            {/* Features Section */}
             <FeaturesSection />
           </>
         )}

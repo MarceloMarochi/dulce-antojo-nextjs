@@ -3,7 +3,7 @@ import { Product, CartItem } from '@/types';
 
 interface UseCartReturn {
   cart: CartItem[];
-  addToCart: (product: Product) => void;
+  addToCart: (product: Product, quantity?: number) => void;
   removeFromCart: (productId: number) => void;
   updateQuantity: (productId: number, change: number) => void;
   getTotalPrice: () => string;
@@ -13,14 +13,14 @@ interface UseCartReturn {
 export const useCart = (): UseCartReturn => {
   const [cart, setCart] = useState<CartItem[]>([]);
 
-  const addToCart = (product: Product): void => {
+  const addToCart = (product: Product, quantity: number = 1): void => {
     const existingItem = cart.find(item => item.id === product.id);
     if (existingItem) {
       setCart(cart.map(item => 
-        item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
+        item.id === product.id ? { ...item, quantity: item.quantity + quantity } : item
       ));
     } else {
-      setCart([...cart, { ...product, quantity: 1 }]);
+      setCart([...cart, { ...product, quantity }]);
     }
   };
 

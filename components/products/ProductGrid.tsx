@@ -44,7 +44,7 @@ export default function ProductGrid({
                 key={product.id}
                 product={product}
                 isAdmin={isAdmin}
-                onAddToCart={onAddToCart}
+                onAddToCart={(product, quantity) => onAddToCart(product, quantity)}
                 onEdit={onEdit}
                 onDelete={onDelete}
                 onToggleStatus={onToggleStatus}

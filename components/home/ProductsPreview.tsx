@@ -34,7 +34,7 @@ export default function ProductsPreview({
         <ProductGrid
           products={products}
           isAdmin={false}
-          onAddToCart={onAddToCart}
+          onAddToCart={(product, quantity) => onAddToCart(product, quantity)}
           onEdit={() => {}}
           onDelete={() => {}}
           onToggleStatus={() => {}}

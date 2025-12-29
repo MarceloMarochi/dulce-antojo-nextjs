@@ -27,14 +27,13 @@ export default function HeroSection({ onViewProducts }: HeroSectionProps) {
           <div className="relative">
             <div className="relative rounded-3xl overflow-hidden shadow-2xl">
               <img 
-                src="https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=800&h=800&fit=crop" 
+                src="/images/chocotortapMAIN.jpg" 
                 alt="Deliciosa torta artesanal"
                 className="w-full h-[500px] object-cover"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-stone-900/20 to-transparent"></div>
             </div>
             
-            {/* Decoración adicional */}
             <div className="absolute -bottom-6 -right-6 w-32 h-32 bg-gradient-to-br from-amber-200 to-rose-200 rounded-full blur-3xl opacity-60 -z-10"></div>
             <div className="absolute -top-6 -left-6 w-40 h-40 bg-gradient-to-br from-rose-200 to-amber-200 rounded-full blur-3xl opacity-60 -z-10"></div>
           </div>
