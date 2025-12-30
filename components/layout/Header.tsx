@@ -24,22 +24,30 @@ export default function Header({
 }: HeaderProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
+  const handleGoHome = () => {
+    setView('home');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   return (
     <header className="bg-white/80 backdrop-blur-md shadow-sm sticky top-0 z-40 border-b border-rose-100">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
         <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-3">
+          <button 
+            onClick={handleGoHome}
+            className="flex items-center space-x-3 hover:opacity-80 transition-opacity"
+          >
             <div className="w-20 h-20 rounded-full overflow-hidden">
               <img 
-                src="/images/logo-sinfondo.png" 
+                src="/images/products/logo-sinfondo.png" 
                 alt="Dulce Antojo Logo"
                 className="w-full h-full object-cover"
               />
             </div>
             <h1 className="text-2xl font-bold text-stone-800">Dulce Antojo</h1>
-          </div>
+          </button>
 
-          <nav className="hidden md:flex items-center space-x-8">
+          <nav className="hidden md:flex items-center space-x-8 absolute left-1/2 transform -translate-x-1/2">
             <button 
               onClick={() => setView('home')} 
               className={`text-sm font-medium transition-colors ${

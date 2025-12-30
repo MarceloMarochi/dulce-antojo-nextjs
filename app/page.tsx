@@ -41,6 +41,11 @@ export default function Home() {
     setSearchTerm('');
     setSelectedCategory('all');
     setView('products');
+
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
   };
 
   const handleLogin = (username: string, password: string) => {

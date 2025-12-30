@@ -27,7 +27,7 @@ export default function HeroSection({ onViewProducts }: HeroSectionProps) {
           <div className="relative">
             <div className="relative rounded-3xl overflow-hidden shadow-2xl">
               <img 
-                src="/images/chocotortapMAIN.jpg" 
+                src="/images/products/chocotortapMAIN.jpg" 
                 alt="Deliciosa torta artesanal"
                 className="w-full h-[500px] object-cover"
               />
